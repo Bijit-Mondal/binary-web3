@@ -28,11 +28,12 @@ import PlayerSelection from "./PlayerSelection.jsx";
 import CaptainSelection from "./CaptainSelection.jsx";
 import { WalletProvider } from "./contexts/WalletContext";
 import Profile from "./components/Profile.jsx";
+import { RecoilRoot } from "recoil";
 
 SuperTokens.init({
   appInfo: {
     appName: "Codedhyan",
-    apiDomain: "https://natural-mollusk-romantic.ngrok-free.app",
+    apiDomain: "http://localhost:3000",
     websiteDomain: "http://localhost:5173",
     apiBasePath: "/api/auth",
     websiteBasePath: "/auth",
@@ -57,7 +58,7 @@ SuperTokens.init({
 });
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  <RecoilRoot>
     <SuperTokensWrapper>
       <WalletProvider>
         <BrowserRouter>
@@ -67,15 +68,15 @@ createRoot(document.getElementById("root")).render(
               PasswordlessPreBuiltUI,
             ])}
             <Route
-            path="/"
-            element={
-              <SessionAuth>
-                {/*Components that require to be protected by authentication*/}
-                <App />
-              </SessionAuth>
-            }
-          />
-          <Route
+              path="/"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <App />
+                </SessionAuth>
+              }
+            />
+            <Route
               path="/dashboard"
               element={
                 <SessionAuth>
@@ -112,18 +113,18 @@ createRoot(document.getElementById("root")).render(
               }
             />
             <Route
-            path="/captainselection"
-            element={
-              <SessionAuth>
-                {/*Components that require to be protected by authentication*/}
-                <CaptainSelection />
-              </SessionAuth>
-            }
-          />
-          <Route path="/app" element={<App />} />
+              path="/captainselection"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <CaptainSelection />
+                </SessionAuth>
+              }
+            />
+            <Route path="/app" element={<App />} />
           </Routes>
         </BrowserRouter>
       </WalletProvider>
     </SuperTokensWrapper>
-  </StrictMode>,
+  </RecoilRoot>,
 );

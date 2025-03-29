@@ -21,7 +21,7 @@ const PlayerCard = ({
       </div>
       <div className="w-full flex gap-8 justify-end pr-12">
         {credits}
-        <input type="checkbox" />
+        <input type="checkbox" checked={selected} onChange={onSelectToggle} />
       </div>
     </div>
   );

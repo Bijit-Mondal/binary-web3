@@ -1,14 +1,8 @@
-import { atom } from "recoil";
+import { atom } from "jotai";
 
-export const selectedMatchId = atom({
-  key: "selectedMatchId",
-  default: null,
-});
+export const selectedMatchId = atom(null);
 
-export const selectedTeamId = atom({
-  key: "selectedTeamId",
-  default: null,
-});
+export const selectedTeams = atom([]);
 
 export const selectedContestId = atom({
   key: "selectedContestId",
@@ -24,5 +18,3 @@ export const selectedCaptainAndViceCaptain = atom({
   key: "selectedCaptainAndViceCaptain",
   default: [],
 });
-
-

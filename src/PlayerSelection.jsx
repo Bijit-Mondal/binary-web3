@@ -4,7 +4,10 @@ import GoBackHeader from "./components/GoBackHeader.jsx";
 import ContestCard from "./components/ContestsCards.jsx";
 import { Loader } from "lucide-react";
 import PlayerCard from "./components/PlayerCards.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAtomValue } from "jotai";
+import { selectedTeams } from "./allSates.js";
+import axios from "axios";
 
 const ProgressBar = ({ progress }) => {
   return (
@@ -18,6 +21,7 @@ const ProgressBar = ({ progress }) => {
 };
 
 const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
+  console.log(teamId);
   const [loading, setLoading] = useState(true);
   const [teamName, setTeamName] = useState("Sample Team Name");
   const [logoUrl, setLogoUrl] = useState(
@@ -31,10 +35,18 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
       }
       setLoading(true);
       try {
-        const response = await axios.get(base_url + `?teamId=${teamId}`);
+        // console.log(teamId);
+        const response = await axios.get(
+          import.meta.env.VITE_BASE_URL + `/ipl/contests/team?teamId=${teamId}`,
+        );
+        // console.log(
+        //   response.data,
+        //   response.data.data.logoUrl,
+        //   response.data.data.teamName,
+        // );
         if (response.status === 200) {
-          setLogoUrl(response.data.logoUrl);
-          setTeamName(response.data.teamName);
+          setLogoUrl(response.data.data.team.logoUrl);
+          setTeamName(response.data.data.team.teamName);
           setLoading(false);
         }
       } catch (error) {
@@ -44,11 +56,11 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
     };
 
     fetchLogo();
-  }, [logoUrl]);
+  }, [teamId]);
   if (loading) {
     return (
-      <div className="animate-spin bg-gray-200 w-12 h-12 rounded-full">
-        <Loader />
+      <div className="flex justify-center items-center bg-gray-200 w-12 h-12 rounded-full">
+        <Loader className="animate-spin" />
       </div>
     );
   }
@@ -63,7 +75,9 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
           alt={`${teamName} Logo`}
           className="w-12 h-12 object-contain rounded-full"
         />
-        <span className="font-semibold">{teamId || "ST"}</span>
+        <span className="font-semibold">
+          {teamId.split("_")[0].toUpperCase() || "ST"}
+        </span>
       </div>
       <p
         className={`text-sm text-gray-800 mt-2 ${onRight ? "text-right" : ""}`}
@@ -78,20 +92,52 @@ function PlayerSelection() {
   const [numberOfPlayersSelected, setNumberOfPlayersSelected] = useState(0);
   const [playerSelectionMap, setPlayerSelectionMap] = useState({});
   const [numberOfCreditsLeft, setNumberOfCreditsLeft] = useState(100);
+  const [searchParam, setSearchParam] = useSearchParams();
+  const selectedTeamsVal = searchParam.get("teams").split(",");
+  const [playersTeamOne, setPlayersTeamOne] = useState({});
+  const [playersTeamTwo, setPlayersTeamTwo] = useState({});
+  console.log(selectedTeamsVal);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function loadAllPlayers() {
+      try {
+        const responseTeam1 = await axios.get(
+          import.meta.env.VITE_BASE_URL +
+            "/ipl/teams/squad?teamId=" +
+            selectedTeamsVal[0],
+        );
+        const data = responseTeam1.data;
+        console.log(data.data.squad);
+        setPlayersTeamOne(data.data.squad);
+
+        const responseTeam2 = await axios.get(
+          import.meta.env.VITE_BASE_URL +
+            "/ipl/teams/squad?teamId=" +
+            selectedTeamsVal[1],
+        );
+        const data2 = responseTeam2.data;
+        console.log(data2.data.squad);
+        setPlayersTeamTwo(data2.data.squad);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    loadAllPlayers();
+  }, []);
 
   return (
     <Main>
       <div className="h-full w-full bg-white relative">
         <GoBackHeader lastScreen="select players" />
         <div className="flex justify-between w-full mt-2 p-4">
-          <TeamLogo teamName={null} logoUrl={null} />
+          <TeamLogo teamId={selectedTeamsVal[0]} logoUrl={null} />
           <div className="flex flex-col justify-center items-center text-xs ml-4">
             credits left
             <div className="font-bold text-lg">{numberOfCreditsLeft}</div>
           </div>
-          <TeamLogo teamName={null} onRight={true} />
+          <TeamLogo teamId={selectedTeamsVal[1]} onRight={true} />
         </div>
         <div className="px-4 py-2 w-full box-border flex items-center">
           <ProgressBar progress={10} />
@@ -99,25 +145,72 @@ function PlayerSelection() {
         </div>
         <div className="overflow-scroll h-[62vh] space-y-2 p-4">
           <h2 className="my-4 font-medium text-lg">pick batsman</h2>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
+          {playersTeamOne["BATSMAN"]?.map((data) => (
+            <PlayerCard
+              key={data.player.id}
+              playerName={data.player.name}
+              credits={data.player.baseCreditValue}
+              selected={playerSelectionMap[data.player.id]}
+              onSelectToggle={() => {
+                setPlayerSelectionMap({
+                  ...playerSelectionMap,
+                  [data.player.id]: !playerSelectionMap[data.player.id],
+                });
+              }}
+            />
+          ))}
+          {playersTeamTwo["BATSMAN"]?.map((data) => (
+            <PlayerCard
+              key={data.player.id}
+              playerName={data.player.name}
+              credits={data.player.baseCreditValue}
+            />
+          ))}
           <h2 className="my-4 font-medium text-lg">pick bowler</h2>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
+          {playersTeamOne["BOWLER"]?.map((data) => (
+            <PlayerCard
+              key={data.player.id}
+              playerName={data.player.name}
+              credits={data.player.baseCreditValue}
+            />
+          ))}
+          {playersTeamTwo["BOWLER"]?.map((data) => (
+            <PlayerCard
+              key={data.player.id}
+              playerName={data.player.name}
+              credits={data.player.baseCreditValue}
+            />
+          ))}
           <h2 className="my-4 font-medium text-lg">pick wk</h2>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
+          {playersTeamOne["WICKET_KEEPER"]?.map((data) => (
+            <PlayerCard
+              key={data.player.id}
+              playerName={data.player.name}
+              credits={data.player.baseCreditValue}
+            />
+          ))}
+          {playersTeamTwo["WICKET_KEEPER"]?.map((data) => (
+            <PlayerCard
+              key={data.player.id}
+              playerName={data.player.name}
+              credits={data.player.baseCreditValue}
+            />
+          ))}
           <h2 className="my-4 font-medium text-lg">pick all rounders</h2>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
+          {playersTeamOne["ALL_ROUNDER"]?.map((data) => (
+            <PlayerCard
+              key={data.player.id}
+              playerName={data.player.name}
+              credits={data.player.baseCreditValue}
+            />
+          ))}
+          {playersTeamTwo["ALL_ROUNDER"]?.map((data) => (
+            <PlayerCard
+              key={data.player.id}
+              playerName={data.player.name}
+              credits={data.player.baseCreditValue}
+            />
+          ))}
         </div>
         <button
           onClick={() => navigate("/captainselection")}

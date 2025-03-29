@@ -9,7 +9,7 @@ import { TicketSlash } from "lucide-react";
 import { CircleHelp } from "lucide-react";
 import { Crown } from "lucide-react";
 import { Flag } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const base_url = "http://localhost:3000/api/ipl";
 
@@ -67,8 +67,18 @@ const ProgressBar = ({ progress }) => {
   );
 };
 
-const ContestCard = ({ contestType, prizePool }) => {
+const ContestCard = ({
+  id,
+  contestType,
+  prizePool,
+  entryFee,
+  totalSpots,
+  filledSpots,
+}) => {
   const navigate = useNavigate();
+
+  const rawSearch = useLocation().search;
+
   return (
     <div className="flex flex-col justify-center items-start bg-white p-4 rounded-lg w-full border px-6">
       <p className="text-xs text-gray-400">
@@ -80,17 +90,24 @@ const ContestCard = ({ contestType, prizePool }) => {
             {getContestIcon(contestType)} ${prizePool}
           </div>
           <button
-            onClick={() => navigate("/playerselection")}
+            onClick={() =>
+              navigate(`/playerselection${rawSearch}&contestId=${id}`)
+            }
             className="bg-gray-100 text-gray-800 font-bold p-1 border border-gray-900 rounded cursor-pointer hover:bg-gray-300 transition-all"
           >
-            {entryCharge[contestType]} FGT
+            {entryFee || entryCharge[contestType]} FGT
           </button>
         </div>
       </div>
-      <ProgressBar progress={Math.random() * 100} />
+      <div className="flex w-full justify-center items-center text-[10px] gap-3">
+        <ProgressBar progress={(filledSpots / totalSpots) * 100} />
+        <div className="flex shrink-0">
+          {filledSpots}/{totalSpots} filled
+        </div>
+      </div>
       <div className="flex w-full items-center mt-4 text-sm">
         <div className="flex justify-center items-center gap-1">
-          <Crown className="w-4 h-4" /> {winChances[contestType]} % win
+          <Crown className="w-4 h-4" /> {winChances[contestType] * 100}% win
         </div>
         <div className="flex justify-center items-center gap-1 ml-3">
           <Flag className="w-4 h-4" /> {noOfTeams[contestType]} teams

@@ -44,7 +44,8 @@ function App() {
           <div className="space-y-2 h-[77vh] overflow-y-scroll">
             {upcomingMatches.map((match) => (
               <MatchDetails
-                key={match.id}
+                key={match.matchId}
+                id={match.matchId}
                 team1={match.awayTeamId}
                 team2={match.homeTeamId}
               />

@@ -3,6 +3,9 @@ import moment from "moment";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { selectedMatchId, selectedTeams } from "../allSates";
+import { useSetAtom } from "jotai";
 
 const TeamLogo = ({ teamId, onRight = false }) => {
   const [loading, setLoading] = useState(true);
@@ -18,15 +21,15 @@ const TeamLogo = ({ teamId, onRight = false }) => {
       }
       setLoading(true);
       try {
-        console.log(teamId);
+        // console.log(teamId);
         const response = await axios.get(
           import.meta.env.VITE_BASE_URL + `/ipl/contests/team?teamId=${teamId}`,
         );
-        console.log(
-          response.data,
-          response.data.data.logoUrl,
-          response.data.data.teamName,
-        );
+        // console.log(
+        //   response.data,
+        //   response.data.data.logoUrl,
+        //   response.data.data.teamName,
+        // );
         if (response.status === 200) {
           setLogoUrl(response.data.data.team.logoUrl);
           setTeamName(response.data.data.team.teamName);
@@ -39,7 +42,7 @@ const TeamLogo = ({ teamId, onRight = false }) => {
     };
 
     fetchLogo();
-  }, [logoUrl]);
+  }, [teamId]);
   if (loading) {
     return (
       <div className="bg-gray-200 w-12 h-12 rounded-full flex justify-center items-center">
@@ -67,14 +70,21 @@ const TeamLogo = ({ teamId, onRight = false }) => {
   );
 };
 
-const MatchDetails = ({ team1, team2 }) => {
+const MatchDetails = ({ team1, team2, id }) => {
   const [timeRemaining, setTimeRemaining] = useState("");
   const navigate = useNavigate();
+
+  const setSelectedMatch = useSetAtom(selectedMatchId);
+  const setSelectedTeams = useSetAtom(selectedTeams);
 
   return (
     <div
       className="flex flex-col justify-center items-start bg-white p-4 rounded-lg w-full border px-6"
-      onClick={() => navigate("/contests")}
+      onClick={() => {
+        setSelectedMatch(id);
+        setSelectedTeams([team1, team2]);
+        navigate(`/contests?matchId=${id}&teams=${team1},${team2}`);
+      }}
     >
       <p className="text-xs text-gray-400">Indian T20 League</p>
       <div className="flex justify-between w-full mt-2">
