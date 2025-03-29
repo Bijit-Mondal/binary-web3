@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import toast, { Toaster } from "react-hot-toast";
 import Main from "./Main.jsx";
 import Footer from "./Footer.jsx";
-import Header from "./Header.jsx";
 import useWallet from "../hooks/useWallet";
 
 export default function Profile() {
-  const { account, balance } = useWallet();
+  const { account, balance, connectWallet, disconnectWallet } = useWallet();
   const [depositAmount, setDepositAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
 
@@ -28,14 +27,35 @@ export default function Profile() {
   return (
     <Main>
       <div className="h-full w-full bg-white relative">
-        <Header />
+        <header className="bg-gray-100 text-gray-800 p-4 flex justify-between items-center shadow-md rounded-lg w-full max-w-4xl mx-auto">
+          <h1 className="text-lg font-semibold">TheEleven</h1>
+          {account ? (
+            <div className="bg-gray-200 p-2 rounded-lg shadow-sm text-center">
+              <p className="text-sm text-gray-700">💰 {balance ? parseFloat(balance).toFixed(4) : "0.0000"} AVAX</p>
+              <p className="text-sm text-gray-700">🔗 {account.substring(0, 4)}...{account.slice(-4)}</p>
+              <button 
+                onClick={disconnectWallet} 
+                className="bg-gray-700 text-white px-3 py-1 text-sm rounded-md hover:bg-gray-800 transition mt-2 w-full">
+                Disconnect
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={connectWallet} 
+              className="bg-gray-700 text-white px-4 py-2 text-sm rounded-md hover:bg-gray-800 transition">
+              Connect Wallet
+            </button>
+          )}
+        </header>
         <div className="flex flex-col items-center justify-center p-6">
           <Toaster />
           <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-md border border-gray-300">
             <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Profile</h2>
             {account ? (
               <div className="mt-6 text-center space-y-4">
-                <p className="text-lg text-gray-700">Your AVAX Balance: <span className="font-bold">{balance ? parseFloat(balance).toFixed(4) : "0.0000"} AVAX</span></p>
+                <p className="text-lg text-gray-700">
+                  Your AVAX Balance: <span className="font-bold">{balance ? parseFloat(balance).toFixed(4) : "0.0000"} AVAX</span>
+                </p>
                 
                 <input 
                   type="number" 

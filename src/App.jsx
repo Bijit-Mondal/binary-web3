@@ -2,7 +2,7 @@ import { useState } from "react";
 import Main from "./components/Main.jsx";
 import MatchDetails from "./components/UpComingMatchesCards.jsx";
 import Footer from "./components/Footer.jsx";
-import Header from "./Header.jsx"; // Updated Header
+import Header from "./components/Header.jsx"; // Updated Header
 
 function App() {
   return (
