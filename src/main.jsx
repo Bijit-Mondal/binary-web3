@@ -26,6 +26,7 @@ import PasswordLess from "supertokens-auth-react/recipe/passwordless";
 import Contests from "./Contests.jsx";
 import PlayerSelection from "./PlayerSelection.jsx";
 import { WalletProvider } from "./contexts/WalletContext";
+import Profile from "./components/Profile.jsx";
 
 SuperTokens.init({
   appInfo: {
@@ -70,6 +71,15 @@ createRoot(document.getElementById("root")).render(
                 <SessionAuth>
                   {/*Components that require to be protected by authentication*/}
                   <App />
+                </SessionAuth>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <Profile />
                 </SessionAuth>
               }
             />
