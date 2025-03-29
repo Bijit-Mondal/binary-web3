@@ -11,7 +11,7 @@ const Footer = () => {
       <div className="flex justify-around items-center">
         <a
           href="/dashboard"
-          className={`flex gap-2 justify-center items-center hover:text-gray-400 ${pathname === "/dashboard" ? "text-gray-800" : ""}`}
+          className={`flex gap-2 justify-center items-center hover:text-gray-400 ${pathname === "/dashboard" || pathname === "/" ? "text-gray-800" : ""}`}
         >
           <Swords /> Matches
         </a>

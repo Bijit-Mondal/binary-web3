@@ -1,21 +1,26 @@
 import { atom } from "recoil";
 
-const selectedTeamId = atom({
+export const selectedMatchId = atom({
+  key: "selectedMatchId",
+  default: null,
+});
+
+export const selectedTeamId = atom({
   key: "selectedTeamId",
   default: null,
 });
 
-const selectedContestId = atom({
+export const selectedContestId = atom({
   key: "selectedContestId",
   default: null,
 });
 
-const selectedPlayers = atom({
+export const selectedPlayers = atom({
   key: "selectedPlayers",
   default: [],
 });
 
-const selectedCaptainAndViceCaptain = atom({
+export const selectedCaptainAndViceCaptain = atom({
   key: "selectedCaptainAndViceCaptain",
   default: [],
 });
