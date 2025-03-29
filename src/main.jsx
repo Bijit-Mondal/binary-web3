@@ -25,11 +25,12 @@ import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordle
 import PasswordLess from "supertokens-auth-react/recipe/passwordless";
 import Contests from "./Contests.jsx";
 import PlayerSelection from "./PlayerSelection.jsx";
+import { WalletProvider } from "./contexts/WalletContext";
 
 SuperTokens.init({
   appInfo: {
     appName: "Codedhyan",
-    apiDomain: "http://localhost:3000",
+    apiDomain: "https://natural-mollusk-romantic.ngrok-free.app",
     websiteDomain: "http://localhost:5173",
     apiBasePath: "/api/auth",
     websiteBasePath: "/auth",
@@ -56,42 +57,44 @@ SuperTokens.init({
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <SuperTokensWrapper>
-      <BrowserRouter>
-        <Routes>
-          {getSuperTokensRoutesForReactRouterDom(reactRouterDom, [
-            ThirdPartyPreBuiltUI,
-            PasswordlessPreBuiltUI,
-          ])}
-          <Route
-            path="/dashboard"
-            element={
-              <SessionAuth>
-                {/*Components that require to be protected by authentication*/}
-                <App />
-              </SessionAuth>
-            }
-          />
-          <Route
-            path="/contests"
-            element={
-              <SessionAuth>
-                {/*Components that require to be protected by authentication*/}
-                <Contests />
-              </SessionAuth>
-            }
-          />
-          <Route
-            path="/playerselection"
-            element={
-              <SessionAuth>
-                {/*Components that require to be protected by authentication*/}
-                <PlayerSelection />
-              </SessionAuth>
-            }
-          />
-          <Route path="/app" element={<App />} />
-        </Routes>
-      </BrowserRouter>
+      <WalletProvider>
+        <BrowserRouter>
+          <Routes>
+            {getSuperTokensRoutesForReactRouterDom(reactRouterDom, [
+              ThirdPartyPreBuiltUI,
+              PasswordlessPreBuiltUI,
+            ])}
+            <Route
+              path="/dashboard"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <App />
+                </SessionAuth>
+              }
+            />
+            <Route
+              path="/contests"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <Contests />
+                </SessionAuth>
+              }
+            />
+            <Route
+              path="/playerselection"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <PlayerSelection />
+                </SessionAuth>
+              }
+            />
+            <Route path="/app" element={<App />} />
+          </Routes>
+        </BrowserRouter>
+      </WalletProvider>
     </SuperTokensWrapper>
   </StrictMode>,
 );
