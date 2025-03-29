@@ -25,6 +25,7 @@ import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordle
 import PasswordLess from "supertokens-auth-react/recipe/passwordless";
 import Contests from "./Contests.jsx";
 import PlayerSelection from "./PlayerSelection.jsx";
+import CaptainSelection from "./CaptainSelection.jsx";
 
 SuperTokens.init({
   appInfo: {
@@ -63,6 +64,15 @@ createRoot(document.getElementById("root")).render(
             PasswordlessPreBuiltUI,
           ])}
           <Route
+            path="/"
+            element={
+              <SessionAuth>
+                {/*Components that require to be protected by authentication*/}
+                <App />
+              </SessionAuth>
+            }
+          />
+          <Route
             path="/dashboard"
             element={
               <SessionAuth>
@@ -86,6 +96,15 @@ createRoot(document.getElementById("root")).render(
               <SessionAuth>
                 {/*Components that require to be protected by authentication*/}
                 <PlayerSelection />
+              </SessionAuth>
+            }
+          />
+          <Route
+            path="/captainselection"
+            element={
+              <SessionAuth>
+                {/*Components that require to be protected by authentication*/}
+                <CaptainSelection />
               </SessionAuth>
             }
           />

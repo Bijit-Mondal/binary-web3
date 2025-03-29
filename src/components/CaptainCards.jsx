@@ -1,4 +1,4 @@
-const PlayerCard = ({
+const CaptainCard = ({
   playerName = "Sample Name",
   credits = 9,
   selected = false,
@@ -19,12 +19,12 @@ const PlayerCard = ({
           </p>
         </div>
       </div>
-      <div className="w-full flex gap-8 justify-end pr-12">
-        {credits}
-        <input type="checkbox" />
+      <div className="w-full flex gap-4 justify-end pr-12">
+        <button className="w-12 h-12 rounded-full border">C</button>
+        <button className="w-12 h-12 rounded-full border">VC</button>
       </div>
     </div>
   );
 };
 
-export default PlayerCard;
+export default CaptainCard;

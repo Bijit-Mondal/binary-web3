@@ -4,7 +4,7 @@ import GoBackHeader from "./components/GoBackHeader.jsx";
 import ContestCard from "./components/ContestsCards.jsx";
 import { Loader } from "lucide-react";
 import PlayerCard from "./components/PlayerCards.jsx";
-import { useNavigate } from "react-router-dom";
+import CaptainCard from "./components/CaptainCards.jsx";
 
 const ProgressBar = ({ progress }) => {
   return (
@@ -74,12 +74,10 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
   );
 };
 
-function PlayerSelection() {
+function CaptainSelection() {
   const [numberOfPlayersSelected, setNumberOfPlayersSelected] = useState(0);
   const [playerSelectionMap, setPlayerSelectionMap] = useState({});
   const [numberOfCreditsLeft, setNumberOfCreditsLeft] = useState(100);
-
-  const navigate = useNavigate();
 
   return (
     <Main>
@@ -99,35 +97,18 @@ function PlayerSelection() {
         </div>
         <div className="overflow-scroll h-[62vh] space-y-2 p-4">
           <h2 className="my-4 font-medium text-lg">pick batsman</h2>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <h2 className="my-4 font-medium text-lg">pick bowler</h2>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <h2 className="my-4 font-medium text-lg">pick wk</h2>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <h2 className="my-4 font-medium text-lg">pick all rounders</h2>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
+          <CaptainCard />
+          <CaptainCard />
+          <CaptainCard />
+          <CaptainCard />
+          <CaptainCard />
         </div>
-        <button
-          onClick={() => navigate("/captainselection")}
-          className="w-full mt-4 p-4 box-border font-bold text-xl hover:bg-gray-100 transition-all cursor-pointer"
-        >
-          save
+        <button className="w-full mt-4 p-4 box-border font-bold text-xl hover:bg-gray-100 transition-all cursor-pointer">
+          submit
         </button>
       </div>
     </Main>
   );
 }
 
-export default PlayerSelection;
+export default CaptainSelection;
