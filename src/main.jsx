@@ -26,11 +26,13 @@ import PasswordLess from "supertokens-auth-react/recipe/passwordless";
 import Contests from "./Contests.jsx";
 import PlayerSelection from "./PlayerSelection.jsx";
 import CaptainSelection from "./CaptainSelection.jsx";
+import { WalletProvider } from "./contexts/WalletContext";
+import Profile from "./components/Profile.jsx";
 
 SuperTokens.init({
   appInfo: {
     appName: "Codedhyan",
-    apiDomain: "http://localhost:3000",
+    apiDomain: "https://natural-mollusk-romantic.ngrok-free.app",
     websiteDomain: "http://localhost:5173",
     apiBasePath: "/api/auth",
     websiteBasePath: "/auth",
@@ -57,13 +59,14 @@ SuperTokens.init({
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <SuperTokensWrapper>
-      <BrowserRouter>
-        <Routes>
-          {getSuperTokensRoutesForReactRouterDom(reactRouterDom, [
-            ThirdPartyPreBuiltUI,
-            PasswordlessPreBuiltUI,
-          ])}
-          <Route
+      <WalletProvider>
+        <BrowserRouter>
+          <Routes>
+            {getSuperTokensRoutesForReactRouterDom(reactRouterDom, [
+              ThirdPartyPreBuiltUI,
+              PasswordlessPreBuiltUI,
+            ])}
+            <Route
             path="/"
             element={
               <SessionAuth>
@@ -73,33 +76,42 @@ createRoot(document.getElementById("root")).render(
             }
           />
           <Route
-            path="/dashboard"
-            element={
-              <SessionAuth>
-                {/*Components that require to be protected by authentication*/}
-                <App />
-              </SessionAuth>
-            }
-          />
-          <Route
-            path="/contests"
-            element={
-              <SessionAuth>
-                {/*Components that require to be protected by authentication*/}
-                <Contests />
-              </SessionAuth>
-            }
-          />
-          <Route
-            path="/playerselection"
-            element={
-              <SessionAuth>
-                {/*Components that require to be protected by authentication*/}
-                <PlayerSelection />
-              </SessionAuth>
-            }
-          />
-          <Route
+              path="/dashboard"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <App />
+                </SessionAuth>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <Profile />
+                </SessionAuth>
+              }
+            />
+            <Route
+              path="/contests"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <Contests />
+                </SessionAuth>
+              }
+            />
+            <Route
+              path="/playerselection"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <PlayerSelection />
+                </SessionAuth>
+              }
+            />
+            <Route
             path="/captainselection"
             element={
               <SessionAuth>
@@ -109,8 +121,9 @@ createRoot(document.getElementById("root")).render(
             }
           />
           <Route path="/app" element={<App />} />
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </WalletProvider>
     </SuperTokensWrapper>
   </StrictMode>,
 );
