@@ -105,6 +105,11 @@ function PlayerSelection() {
   const [playersTeamOne, setPlayersTeamOne] = useState({});
   const [playersTeamTwo, setPlayersTeamTwo] = useState({});
 
+  if (!selectedTeamsVal.length) {
+    navigate("/");
+    return;
+  }
+
   const [selectedPlayersAllState, setSelectedPlayersAllState] = useAtom(
     selectedPlayersAllStatesAtom,
   );

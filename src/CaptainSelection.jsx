@@ -7,6 +7,7 @@ import PlayerCard from "./components/PlayerCards.jsx";
 import CaptainCard from "./components/CaptainCards.jsx";
 import { useAtom } from "jotai";
 import { selectedPlayersAllStatesAtom } from "./allSates.js";
+import { useNavigate } from "react-router-dom";
 
 const convertName = (player) => {
   let nameArray = player.split("-");
@@ -78,10 +79,13 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
 };
 
 function CaptainSelection() {
+  const navigate = useNavigate();
   const [captainSelectionId, setCaptainSelectionId] = useState("");
   const [viceCaptainSelectionId, setViceCaptainSelectionId] = useState("");
   const [playersSelected, setPlayersSelected] = useState([]);
-
+  let selectedPlayersAllStateLocal = JSON.parse(
+    localStorage.getItem("selectedPlayersAllState"),
+  );
   const [selectedPlayersAllState, setSelectedPlayersAllState] = useAtom(
     selectedPlayersAllStatesAtom,
   );
@@ -92,14 +96,13 @@ function CaptainSelection() {
       let playersSelectedTemp = Object.keys(allPlayers);
       setPlayersSelected(playersSelectedTemp);
     } else {
-      let selectedPlayersAllStateLocal = JSON.parse(
-        localStorage.getItem("selectedPlayersAllState"),
-      );
       if (selectedPlayersAllStateLocal) {
         let allPlayers = selectedPlayersAllStateLocal.playerSelectionMap;
         let playersSelectedTemp = Object.keys(allPlayers);
         setPlayersSelected(playersSelectedTemp);
         console.log(playersSelectedTemp);
+      } else {
+        navigate("/");
       }
     }
   }, [selectedPlayersAllState]);
@@ -148,7 +151,22 @@ function CaptainSelection() {
             />
           ))}
         </div>
-        <button className="w-full mt-4 p-4 box-border font-bold text-xl hover:bg-gray-100 transition-all cursor-pointer">
+        <button
+          className="w-full mt-4 p-4 box-border font-bold text-xl hover:bg-gray-100 transition-all cursor-pointer"
+          onClick={() => {
+            if (!captainSelectionId || !viceCaptainSelectionId) {
+              alert("Please select a captain and vice captain");
+              return;
+            }
+            setSelectedPlayersAllState({
+              ...selectedPlayersAllStateLocal,
+              captainSelectionId,
+              viceCaptainSelectionId,
+            });
+            localStorage.clear();
+            navigate("/stake");
+          }}
+        >
           submit
         </button>
       </div>

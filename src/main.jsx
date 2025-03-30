@@ -29,6 +29,9 @@ import CaptainSelection from "./CaptainSelection.jsx";
 import { WalletProvider } from "./contexts/WalletContext";
 import Profile from "./components/Profile.jsx";
 import { RecoilRoot } from "recoil";
+import StakeD11Tokens from "./components/Stake11Tokens.jsx";
+import LandingPage from "./components/LandingPage.jsx";
+import Premium from "./components/Premium.jsx";
 
 SuperTokens.init({
   appInfo: {
@@ -67,15 +70,7 @@ createRoot(document.getElementById("root")).render(
               ThirdPartyPreBuiltUI,
               PasswordlessPreBuiltUI,
             ])}
-            <Route
-              path="/"
-              element={
-                <SessionAuth>
-                  {/*Components that require to be protected by authentication*/}
-                  <App />
-                </SessionAuth>
-              }
-            />
+
             <Route
               path="/dashboard"
               element={
@@ -121,6 +116,18 @@ createRoot(document.getElementById("root")).render(
                 </SessionAuth>
               }
             />
+            <Route
+              path="/stake"
+              element={
+                <SessionAuth>
+                  {/*Components that require to be protected by authentication*/}
+                  <StakeD11Tokens />
+                </SessionAuth>
+              }
+            />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/premium" element={<Premium />} />
+
             <Route path="/app" element={<App />} />
           </Routes>
         </BrowserRouter>
