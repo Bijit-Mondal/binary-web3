@@ -15,3 +15,5 @@ export const selectedCaptainAndViceCaptain = atom({
   key: "selectedCaptainAndViceCaptain",
   default: [],
 });
+
+export const selectedContestEntryFee = atom(0);

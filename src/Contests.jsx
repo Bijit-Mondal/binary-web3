@@ -81,8 +81,8 @@ function Contests() {
             <div className="space-y-2">
               {contests["HEAD_TO_HEAD"]?.map((contest) => (
                 <ContestCard
-                  key={contest.id}
-                  id={contest.id}
+                  key={contest.contestId}
+                  id={contest.contestId}
                   contestType={"head_to_head"}
                   prizePool={contest.totalPrizePool}
                   entryFee={contest.entryFee}
@@ -96,8 +96,8 @@ function Contests() {
             <div className="space-y-2">
               {contests["PRACTICE"]?.map((contest) => (
                 <ContestCard
-                  key={contest.id}
-                  id={contest.id}
+                  key={contest.contestId}
+                  id={contest.contestId}
                   contestType={"practice"}
                   prizePool={contest.totalPrizePool}
                   entryFee={contest.entryFee}

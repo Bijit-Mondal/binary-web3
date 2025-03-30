@@ -163,7 +163,9 @@ function CaptainSelection() {
               captainSelectionId,
               viceCaptainSelectionId,
             });
-            localStorage.clear();
+            localStorage.setItem("viceCaptainSelectionId", viceCaptainSelectionId);
+            localStorage.setItem("captainSelectionId", captainSelectionId);
+            // localStorage.removeItem("selectedPlayersAllState");
             navigate("/stake");
           }}
         >
