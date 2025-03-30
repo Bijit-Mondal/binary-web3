@@ -9,10 +9,7 @@ export const selectedContestId = atom({
   default: null,
 });
 
-export const selectedPlayers = atom({
-  key: "selectedPlayers",
-  default: [],
-});
+export const selectedPlayersAllStatesAtom = atom({});
 
 export const selectedCaptainAndViceCaptain = atom({
   key: "selectedCaptainAndViceCaptain",

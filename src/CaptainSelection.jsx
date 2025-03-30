@@ -5,16 +5,18 @@ import ContestCard from "./components/ContestsCards.jsx";
 import { Loader } from "lucide-react";
 import PlayerCard from "./components/PlayerCards.jsx";
 import CaptainCard from "./components/CaptainCards.jsx";
+import { useAtom } from "jotai";
+import { selectedPlayersAllStatesAtom } from "./allSates.js";
 
-const ProgressBar = ({ progress }) => {
-  return (
-    <div className="w-full h-2 bg-gray-200 rounded-full my-2">
-      <div
-        className="h-full bg-gray-500 rounded-full transition-all"
-        style={{ width: `${progress}%` }}
-      />
-    </div>
-  );
+const convertName = (player) => {
+  let nameArray = player.split("-");
+  let firstName = nameArray[0];
+  firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+  let lastName = nameArray[1];
+  lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1);
+  let name = firstName + " " + lastName;
+
+  return name;
 };
 
 const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
@@ -45,6 +47,7 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
 
     fetchLogo();
   }, [logoUrl]);
+
   if (loading) {
     return (
       <div className="animate-spin bg-gray-200 w-12 h-12 rounded-full">
@@ -75,33 +78,75 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
 };
 
 function CaptainSelection() {
-  const [numberOfPlayersSelected, setNumberOfPlayersSelected] = useState(0);
-  const [playerSelectionMap, setPlayerSelectionMap] = useState({});
-  const [numberOfCreditsLeft, setNumberOfCreditsLeft] = useState(100);
+  const [captainSelectionId, setCaptainSelectionId] = useState("");
+  const [viceCaptainSelectionId, setViceCaptainSelectionId] = useState("");
+  const [playersSelected, setPlayersSelected] = useState([]);
+
+  const [selectedPlayersAllState, setSelectedPlayersAllState] = useAtom(
+    selectedPlayersAllStatesAtom,
+  );
+
+  useEffect(() => {
+    if (Object.keys(selectedPlayersAllState).length) {
+      let allPlayers = selectedPlayersAllState.playerSelectionMap;
+      let playersSelectedTemp = Object.keys(allPlayers);
+      setPlayersSelected(playersSelectedTemp);
+    } else {
+      let selectedPlayersAllStateLocal = JSON.parse(
+        localStorage.getItem("selectedPlayersAllState"),
+      );
+      if (selectedPlayersAllStateLocal) {
+        let allPlayers = selectedPlayersAllStateLocal.playerSelectionMap;
+        let playersSelectedTemp = Object.keys(allPlayers);
+        setPlayersSelected(playersSelectedTemp);
+        console.log(playersSelectedTemp);
+      }
+    }
+  }, [selectedPlayersAllState]);
 
   return (
     <Main>
       <div className="h-full w-full bg-white relative">
-        <GoBackHeader lastScreen="select players" />
-        <div className="flex justify-between w-full mt-2 p-4">
-          <TeamLogo teamName={null} logoUrl={null} />
-          <div className="flex flex-col justify-center items-center text-xs ml-4">
-            credits left
-            <div className="font-bold text-lg">{numberOfCreditsLeft}</div>
-          </div>
-          <TeamLogo teamName={null} onRight={true} />
+        <GoBackHeader />
+        <div className="flex justify-between w-full mt-2 p-4 text-2xl">
+          you are almost there
         </div>
-        <div className="px-4 py-2 w-full box-border flex items-center">
-          <ProgressBar progress={10} />
-          <div className="flex text-xs shrink-0 ml-4">0 / 11 players</div>
-        </div>
-        <div className="overflow-scroll h-[62vh] space-y-2 p-4">
-          <h2 className="my-4 font-medium text-lg">pick batsman</h2>
-          <CaptainCard />
-          <CaptainCard />
-          <CaptainCard />
-          <CaptainCard />
-          <CaptainCard />
+        <div className="overflow-scroll h-[72vh] space-y-2 p-4">
+          <h2 className="my-4 font-medium text-lg">pick captains</h2>
+          {playersSelected.map((player, index) => (
+            <CaptainCard
+              key={index}
+              selectedCap={player == captainSelectionId}
+              selectViceCap={player == viceCaptainSelectionId}
+              onSelectToggleCap={() => {
+                if (viceCaptainSelectionId == player) {
+                  alert("You can't select a captain as vice captain");
+                  return;
+                }
+                if (captainSelectionId == player) {
+                  setCaptainSelectionId(null);
+                } else if (captainSelectionId) {
+                  alert("You can only select one captain");
+                } else {
+                  setCaptainSelectionId(player);
+                }
+              }}
+              onSelectToggleViceCap={() => {
+                if (captainSelectionId == player) {
+                  alert("You can't select a captain as vice captain");
+                  return;
+                }
+                if (viceCaptainSelectionId == player) {
+                  setViceCaptainSelectionId(null);
+                } else if (viceCaptainSelectionId) {
+                  alert("You can only select one vice captain");
+                } else {
+                  setViceCaptainSelectionId(player);
+                }
+              }}
+              playerName={convertName(player)}
+            />
+          ))}
         </div>
         <button className="w-full mt-4 p-4 box-border font-bold text-xl hover:bg-gray-100 transition-all cursor-pointer">
           submit

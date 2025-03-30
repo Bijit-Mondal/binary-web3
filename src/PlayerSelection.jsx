@@ -5,8 +5,8 @@ import ContestCard from "./components/ContestsCards.jsx";
 import { Loader } from "lucide-react";
 import PlayerCard from "./components/PlayerCards.jsx";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAtomValue } from "jotai";
-import { selectedTeams } from "./allSates.js";
+import { useAtom, useAtomValue } from "jotai";
+import { selectedPlayersAllStatesAtom, selectedTeams } from "./allSates.js";
 import axios from "axios";
 
 const ProgressBar = ({ progress }) => {
@@ -90,15 +90,96 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
 
 function PlayerSelection() {
   const [numberOfPlayersSelected, setNumberOfPlayersSelected] = useState(0);
+  const [
+    numberOfPlayerSelectedForTeamOne,
+    setNumberOfPlayerSelectedForTeamOne,
+  ] = useState(0);
+  const [
+    numberOfPlayerSelectedForTeamTwo,
+    setNumberOfPlayerSelectedForTeamTwo,
+  ] = useState(0);
   const [playerSelectionMap, setPlayerSelectionMap] = useState({});
   const [numberOfCreditsLeft, setNumberOfCreditsLeft] = useState(100);
   const [searchParam, setSearchParam] = useSearchParams();
   const selectedTeamsVal = searchParam.get("teams").split(",");
   const [playersTeamOne, setPlayersTeamOne] = useState({});
   const [playersTeamTwo, setPlayersTeamTwo] = useState({});
-  console.log(selectedTeamsVal);
+
+  const [selectedPlayersAllState, setSelectedPlayersAllState] = useAtom(
+    selectedPlayersAllStatesAtom,
+  );
 
   const navigate = useNavigate();
+
+  const handleToggle = (data, teamTwo = false) => {
+    let tempNextState = !playerSelectionMap[data.player.id];
+
+    // check if already 11 players selected
+    if (tempNextState && numberOfPlayersSelected == 11) {
+      alert("Maximum players selected");
+      return;
+    }
+
+    console.log(teamTwo, tempNextState);
+    setNumberOfCreditsLeft(
+      tempNextState
+        ? numberOfCreditsLeft - data.player.baseCreditValue
+        : numberOfCreditsLeft + data.player.baseCreditValue,
+    );
+    setNumberOfPlayersSelected(
+      tempNextState ? numberOfPlayersSelected + 1 : numberOfPlayersSelected - 1,
+    );
+    setPlayerSelectionMap({
+      ...playerSelectionMap,
+      [data.player.id]: !playerSelectionMap[data.player.id],
+    });
+    teamTwo
+      ? setNumberOfPlayerSelectedForTeamTwo(
+          tempNextState
+            ? numberOfPlayerSelectedForTeamTwo + 1
+            : numberOfPlayerSelectedForTeamTwo - 1,
+        )
+      : setNumberOfPlayerSelectedForTeamOne(
+          tempNextState
+            ? numberOfPlayerSelectedForTeamOne + 1
+            : numberOfPlayerSelectedForTeamOne - 1,
+        );
+  };
+
+  useEffect(() => {
+    if (Object.keys(selectedPlayersAllState).length) {
+      setPlayerSelectionMap(selectedPlayersAllState.playerSelectionMap);
+      setNumberOfPlayersSelected(
+        selectedPlayersAllState.numberOfPlayersSelected,
+      );
+      setNumberOfPlayerSelectedForTeamOne(
+        selectedPlayersAllState.numberOfPlayerSelectedForTeamOne,
+      );
+      setNumberOfPlayerSelectedForTeamTwo(
+        selectedPlayersAllState.numberOfPlayerSelectedForTeamTwo,
+      );
+      setNumberOfCreditsLeft(selectedPlayersAllState.numberOfCreditsLeft);
+    } else {
+      let selectedPlayersAllStateLocal = JSON.parse(
+        localStorage.getItem("selectedPlayersAllState"),
+      );
+      if (selectedPlayersAllStateLocal) {
+        setPlayerSelectionMap(selectedPlayersAllStateLocal.playerSelectionMap);
+        setNumberOfPlayersSelected(
+          selectedPlayersAllStateLocal.numberOfPlayersSelected,
+        );
+        setNumberOfPlayerSelectedForTeamOne(
+          selectedPlayersAllStateLocal.numberOfPlayerSelectedForTeamOne,
+        );
+        setNumberOfPlayerSelectedForTeamTwo(
+          selectedPlayersAllStateLocal.numberOfPlayerSelectedForTeamTwo,
+        );
+        setNumberOfCreditsLeft(
+          selectedPlayersAllStateLocal.numberOfCreditsLeft,
+        );
+      }
+    }
+  }, [selectedPlayersAllState]);
 
   useEffect(() => {
     async function loadAllPlayers() {
@@ -132,16 +213,26 @@ function PlayerSelection() {
       <div className="h-full w-full bg-white relative">
         <GoBackHeader lastScreen="select players" />
         <div className="flex justify-between w-full mt-2 p-4">
-          <TeamLogo teamId={selectedTeamsVal[0]} logoUrl={null} />
+          <TeamLogo
+            numberOfPlayersSelected={numberOfPlayerSelectedForTeamOne}
+            teamId={selectedTeamsVal[0]}
+            logoUrl={null}
+          />
           <div className="flex flex-col justify-center items-center text-xs ml-4">
             credits left
             <div className="font-bold text-lg">{numberOfCreditsLeft}</div>
           </div>
-          <TeamLogo teamId={selectedTeamsVal[1]} onRight={true} />
+          <TeamLogo
+            numberOfPlayersSelected={numberOfPlayerSelectedForTeamTwo}
+            teamId={selectedTeamsVal[1]}
+            onRight={true}
+          />
         </div>
         <div className="px-4 py-2 w-full box-border flex items-center">
-          <ProgressBar progress={10} />
-          <div className="flex text-xs shrink-0 ml-4">0 / 11 players</div>
+          <ProgressBar progress={(numberOfPlayersSelected / 11) * 100} />
+          <div className="flex text-xs shrink-0 ml-4">
+            {numberOfPlayersSelected} / 11 players
+          </div>
         </div>
         <div className="overflow-scroll h-[62vh] space-y-2 p-4">
           <h2 className="my-4 font-medium text-lg">pick batsman</h2>
@@ -151,12 +242,7 @@ function PlayerSelection() {
               playerName={data.player.name}
               credits={data.player.baseCreditValue}
               selected={playerSelectionMap[data.player.id]}
-              onSelectToggle={() => {
-                setPlayerSelectionMap({
-                  ...playerSelectionMap,
-                  [data.player.id]: !playerSelectionMap[data.player.id],
-                });
-              }}
+              onSelectToggle={() => handleToggle(data)}
             />
           ))}
           {playersTeamTwo["BATSMAN"]?.map((data) => (
@@ -164,6 +250,8 @@ function PlayerSelection() {
               key={data.player.id}
               playerName={data.player.name}
               credits={data.player.baseCreditValue}
+              selected={playerSelectionMap[data.player.id]}
+              onSelectToggle={() => handleToggle(data, true)}
             />
           ))}
           <h2 className="my-4 font-medium text-lg">pick bowler</h2>
@@ -172,6 +260,8 @@ function PlayerSelection() {
               key={data.player.id}
               playerName={data.player.name}
               credits={data.player.baseCreditValue}
+              selected={playerSelectionMap[data.player.id]}
+              onSelectToggle={() => handleToggle(data)}
             />
           ))}
           {playersTeamTwo["BOWLER"]?.map((data) => (
@@ -179,6 +269,8 @@ function PlayerSelection() {
               key={data.player.id}
               playerName={data.player.name}
               credits={data.player.baseCreditValue}
+              selected={playerSelectionMap[data.player.id]}
+              onSelectToggle={() => handleToggle(data, true)}
             />
           ))}
           <h2 className="my-4 font-medium text-lg">pick wk</h2>
@@ -187,6 +279,8 @@ function PlayerSelection() {
               key={data.player.id}
               playerName={data.player.name}
               credits={data.player.baseCreditValue}
+              selected={playerSelectionMap[data.player.id]}
+              onSelectToggle={() => handleToggle(data)}
             />
           ))}
           {playersTeamTwo["WICKET_KEEPER"]?.map((data) => (
@@ -194,6 +288,8 @@ function PlayerSelection() {
               key={data.player.id}
               playerName={data.player.name}
               credits={data.player.baseCreditValue}
+              selected={playerSelectionMap[data.player.id]}
+              onSelectToggle={() => handleToggle(data, true)}
             />
           ))}
           <h2 className="my-4 font-medium text-lg">pick all rounders</h2>
@@ -202,6 +298,8 @@ function PlayerSelection() {
               key={data.player.id}
               playerName={data.player.name}
               credits={data.player.baseCreditValue}
+              selected={playerSelectionMap[data.player.id]}
+              onSelectToggle={() => handleToggle(data)}
             />
           ))}
           {playersTeamTwo["ALL_ROUNDER"]?.map((data) => (
@@ -209,12 +307,39 @@ function PlayerSelection() {
               key={data.player.id}
               playerName={data.player.name}
               credits={data.player.baseCreditValue}
+              selected={playerSelectionMap[data.player.id]}
+              onSelectToggle={() => handleToggle(data, true)}
             />
           ))}
         </div>
         <button
-          onClick={() => navigate("/captainselection")}
-          className="w-full mt-4 p-4 box-border font-bold text-xl hover:bg-gray-100 transition-all cursor-pointer"
+          onClick={() => {
+            // save all progress
+            setSelectedPlayersAllState({
+              numberOfPlayersSelected,
+              numberOfPlayerSelectedForTeamOne,
+              numberOfPlayerSelectedForTeamTwo,
+              playerSelectionMap,
+              numberOfCreditsLeft,
+            });
+            localStorage.setItem(
+              "selectedPlayersAllState",
+              JSON.stringify({
+                numberOfPlayersSelected,
+                numberOfPlayerSelectedForTeamOne,
+                numberOfPlayerSelectedForTeamTwo,
+                playerSelectionMap,
+                numberOfCreditsLeft,
+              }),
+            );
+            navigate("/captainselection");
+          }}
+          disabled={numberOfPlayersSelected != 11}
+          className={`w-full mt-4 p-4 box-border font-bold text-xl hover:bg-gray-100 transition-all ${
+            numberOfPlayersSelected != 11
+              ? "cursor-not-allowed"
+              : "cursor-pointer"
+          }`}
         >
           save
         </button>
