@@ -35,9 +35,11 @@ import Premium from "./components/Premium.jsx";
 
 SuperTokens.init({
   appInfo: {
-    appName: "Codedhyan",
-    apiDomain: "http://localhost:3000",
-    websiteDomain: "http://localhost:5173",
+    appName: "Gamezy",
+    apiDomain: import.meta.env.VITE_APP_API_DOMAIN || "http://localhost:3000",
+    websiteDomain:
+      import.meta.env.VITE_APP_WEBSITE_DOMAIN ||
+      "http://localhost:5173",
     apiBasePath: "/api/auth",
     websiteBasePath: "/auth",
   },
