@@ -164,7 +164,7 @@ export default function Profile() {
                 </header>
                 <div className="flex flex-col items-center justify-center p-6 h-[70vh] overflow-y-scroll">
                     <Toaster />
-                    <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-md border border-gray-300 mt-[60vh]">
+                    <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-md border border-gray-300 mt-[40vh]">
                         <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
                             Profile
                         </h2>
