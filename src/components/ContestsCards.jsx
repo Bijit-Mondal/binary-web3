@@ -13,8 +13,6 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useSetAtom } from "jotai";
 import { selectedContestEntryFee } from "../allSates";
 
-const base_url = "http://localhost:3000/api/ipl";
-
 const prizePollGuarantee = {
     premium: true,
     mega: true,
