@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import moment from "moment";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSetAtom } from "jotai";
 import { selectedMatchId, selectedTeams } from "../allSates";
 
+// Component to show team logo and name
 const TeamLogo = ({ teamId, onRight = false }) => {
   const [loading, setLoading] = useState(true);
   const [teamName, setTeamName] = useState("Sample Team Name");
@@ -27,12 +27,12 @@ const TeamLogo = ({ teamId, onRight = false }) => {
         if (response.status === 200) {
           setLogoUrl(response.data.data.team.logoUrl);
           setTeamName(response.data.data.team.teamName);
-          setLoading(false);
         }
       } catch (error) {
         console.error("Error fetching logo:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchLogo();
@@ -57,7 +57,7 @@ const TeamLogo = ({ teamId, onRight = false }) => {
           className="w-12 h-12 object-contain rounded-full"
         />
         <span className="font-semibold">
-          {teamId.split("_")[0].toUpperCase() || "ST"}
+          {teamId?.split("_")[0]?.toUpperCase() || "ST"}
         </span>
       </div>
       <p className="text-base text-gray-800 mt-2">{teamName}</p>
@@ -65,12 +65,13 @@ const TeamLogo = ({ teamId, onRight = false }) => {
   );
 };
 
+// Component to render each match card
 const MatchDetails = ({ team1, team2, id, index }) => {
   const navigate = useNavigate();
   const setSelectedMatch = useSetAtom(selectedMatchId);
   const setSelectedTeams = useSetAtom(selectedTeams);
 
-  const isClickable = index < 2; // Only the first two games are clickable
+  const isClickable = index < 2; // Only first two matches clickable
 
   const handleClick = () => {
     if (isClickable) {
@@ -90,14 +91,23 @@ const MatchDetails = ({ team1, team2, id, index }) => {
       <p className="text-xs text-gray-400">Indian T20 League</p>
       <div className="flex justify-between w-full mt-2">
         <TeamLogo teamId={team1} />
-        vs
+        <span className="text-sm font-semibold text-gray-700 self-center">vs</span>
         <TeamLogo teamId={team2} onRight={true} />
       </div>
     </div>
   );
 };
 
+// Main component to render all upcoming matches
 const UpComingMatchesCards = ({ matches }) => {
+  if (!Array.isArray(matches)) {
+    return <p className="text-red-500 text-sm">Error: Matches data is not available.</p>;
+  }
+
+  if (matches.length === 0) {
+    return <p className="text-gray-500 text-sm">No upcoming matches.</p>;
+  }
+
   return (
     <div className="space-y-4">
       {matches.map((match, index) => (
