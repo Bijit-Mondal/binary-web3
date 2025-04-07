@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import Header from "./Header";
 import Main from "./Main";
-import cricketImage from "../../public/PlayingCricket.png";
+import cricketImage from "../assets/PlayingCricket.png";
 
 const LandingPage = () => {
   const navigate = useNavigate();
