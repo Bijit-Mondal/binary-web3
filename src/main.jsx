@@ -32,6 +32,7 @@ import { RecoilRoot } from "recoil";
 import StakeD11Tokens from "./components/Stake11Tokens.jsx";
 import LandingPage from "./components/LandingPage.jsx";
 import Premium from "./components/Premium.jsx";
+import Error404 from "./components/Error404.jsx";
 
 SuperTokens.init({
   appInfo: {
@@ -131,6 +132,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="/premium" element={<Premium />} />
 
             <Route path="/app" element={<App />} />
+            <Route path="*" element={<Error404 />} />
           </Routes>
         </BrowserRouter>
       </WalletProvider>
