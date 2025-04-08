@@ -1,3 +1,5 @@
+import TeamLogo from "./TeamLogo";
+
 const ContestsEnrolledCards = ({ contest, match }) => {
     return (
         <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-4 border border-gray-200">
@@ -12,9 +14,11 @@ const ContestsEnrolledCards = ({ contest, match }) => {
             </p>
 
             <div className="mt-3 flex justify-between text-sm text-gray-600">
-                <p>🏠 {match.homeTeamId}</p>
-                <p>🆚</p>
-                <p>🚀 {match.awayTeamId}</p>
+                {/* <p>🏠 {match.homeTeamId}</p> */}
+                <TeamLogo teamId={match.homeTeamId} />
+                <p className="mt-4">🆚</p>
+                {/* <p>🚀 {match.awayTeamId}</p> */}
+                <TeamLogo teamId={match.awayTeamId} />
             </div>
 
             <div className="mt-4 p-3 bg-gray-100 rounded-lg">
