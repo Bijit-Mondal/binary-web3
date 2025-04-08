@@ -54,7 +54,7 @@ export default function Profile() {
         async function getAllContests() {
             const options = {
                 method: "GET",
-                url: `${import.meta.env.VITE_BASE_URL}/ipl/contests/all-contest?userId=8`,
+                url: `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/contests/all-contest?userId=8`,
             };
 
             try {

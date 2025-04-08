@@ -22,7 +22,7 @@ const TeamLogo = ({ teamId, onRight = false }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          import.meta.env.VITE_BASE_URL + `/ipl/contests/team?teamId=${teamId}`
+          `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/contests/team?teamId=${teamId}`
         );
         if (response.status === 200) {
           setLogoUrl(response.data.data.team.logoUrl);
@@ -66,7 +66,7 @@ const TeamLogo = ({ teamId, onRight = false }) => {
 };
 
 // Component to render each match card
-const MatchDetails = ({ team1, team2, id, index }) => {
+const MatchDetails = ({ team1, team2, id, index, formattedDate }) => {
   const navigate = useNavigate();
   const setSelectedMatch = useSetAtom(selectedMatchId);
   const setSelectedTeams = useSetAtom(selectedTeams);
@@ -89,6 +89,7 @@ const MatchDetails = ({ team1, team2, id, index }) => {
       onClick={handleClick}
     >
       <p className="text-xs text-gray-400">Indian T20 League</p>
+      <p className="text-sm text-gray-600">{formattedDate}</p>
       <div className="flex justify-between w-full mt-2">
         <TeamLogo teamId={team1} />
         <span className="text-sm font-semibold text-gray-700 self-center">vs</span>
@@ -110,15 +111,19 @@ const UpComingMatchesCards = ({ matches }) => {
 
   return (
     <div className="space-y-4">
-      {matches.map((match, index) => (
-        <MatchDetails
-          key={match.id}
-          team1={match.team1}
-          team2={match.team2}
-          id={match.id}
-          index={index}
-        />
-      ))}
+      {matches.map((match, index) => {
+        console.log('Match data:', match);
+        return (
+          <MatchDetails
+            key={match.matchId || index}
+            team1={match.homeTeamId}
+            team2={match.awayTeamId}
+            id={match.matchId}
+            index={index}
+            formattedDate={match.formattedDate}
+          />
+        );
+      })}
     </div>
   );
 };

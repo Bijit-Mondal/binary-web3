@@ -113,7 +113,7 @@ const StakeD11Tokens = ({ onStake }) => {
             };
 
             const response = await axios.post(
-                import.meta.env.VITE_BASE_URL + "/ipl/contests/team/bymatch",
+                `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/contests/team/bymatch`,
                 payload
             );
             if (response.data.success) {

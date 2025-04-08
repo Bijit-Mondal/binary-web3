@@ -15,7 +15,7 @@ function App() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/ipl/contests/schedule`
+          `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/contests/schedule`
         );
         const data = response.data;
         setUpcomingMatches(data.data.matches.slice(0, 20));

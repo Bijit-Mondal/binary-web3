@@ -29,9 +29,7 @@ function Contests() {
       console.log(selectedMatch);
       try {
         const response = await axios.get(
-          import.meta.env.VITE_BASE_URL +
-            "/ipl/contests?matchId=" +
-            selectedMatch,
+          `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/contests?matchId=${selectedMatch}`
         );
         const data = response.data;
         console.log(data.data.contests);

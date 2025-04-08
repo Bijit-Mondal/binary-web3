@@ -37,8 +37,7 @@ const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
             try {
                 // console.log(teamId);
                 const response = await axios.get(
-                    import.meta.env.VITE_BASE_URL +
-                        `/ipl/contests/team?teamId=${teamId}`
+                    `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/contests/team?teamId=${teamId}`
                 );
                 // console.log(
                 //   response.data,
@@ -199,18 +198,14 @@ function PlayerSelection() {
         async function loadAllPlayers() {
             try {
                 const responseTeam1 = await axios.get(
-                    import.meta.env.VITE_BASE_URL +
-                        "/ipl/teams/squad?teamId=" +
-                        selectedTeamsVal[0]
+                    `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/teams/squad?teamId=${selectedTeamsVal[0]}`
                 );
                 const data = responseTeam1.data;
                 console.log(data.data.squad);
                 setPlayersTeamOne(data.data.squad);
 
                 const responseTeam2 = await axios.get(
-                    import.meta.env.VITE_BASE_URL +
-                        "/ipl/teams/squad?teamId=" +
-                        selectedTeamsVal[1]
+                    `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/teams/squad?teamId=${selectedTeamsVal[1]}`
                 );
                 const data2 = responseTeam2.data;
                 console.log(data2.data.squad);
