@@ -56,7 +56,7 @@ const UpComingMatchesCards = ({ matches }) => {
   return (
     <div className="space-y-4">
       {matches.map((match, index) => {
-        console.log('Match data:', match);
+        // console.log('Match data:', match);
         return (
           <MatchDetails
             key={match.matchId || index}

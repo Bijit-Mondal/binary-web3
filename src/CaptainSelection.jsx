@@ -100,7 +100,7 @@ function CaptainSelection() {
         let allPlayers = selectedPlayersAllStateLocal.playerSelectionMap;
         let playersSelectedTemp = Object.keys(allPlayers);
         setPlayersSelected(playersSelectedTemp);
-        console.log(playersSelectedTemp);
+        // console.log(playersSelectedTemp);
       } else {
         navigate("/");
       }

@@ -59,7 +59,7 @@ export default function Profile() {
 
             try {
                 const { data } = await axios.request(options);
-                console.log(data.data.contests.UPCOMING);
+                // console.log(data.data.contests.UPCOMING);
                 setContests(data.data.contests.UPCOMING);
             } catch (error) {
                 console.error(error);

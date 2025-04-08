@@ -26,13 +26,13 @@ function Contests() {
       return;
     }
     async function loadAllContests() {
-      console.log(selectedMatch);
+      // console.log(selectedMatch);
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/contests?matchId=${selectedMatch}`
         );
         const data = response.data;
-        console.log(data.data.contests);
+        // console.log(data.data.contests);
         setContests(data.data.contests);
       } catch (error) {
         console.error(error);

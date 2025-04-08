@@ -21,7 +21,7 @@ const ProgressBar = ({ progress }) => {
 };
 
 const TeamLogo = ({ teamId, numberOfPlayersSelected = 0, onRight = false }) => {
-    console.log(teamId);
+    // console.log(teamId);
     const [loading, setLoading] = useState(true);
     const [teamName, setTeamName] = useState("Sample Team Name");
     const [logoUrl, setLogoUrl] = useState(
@@ -129,7 +129,7 @@ function PlayerSelection() {
             return;
         }
 
-        console.log(teamTwo, tempNextState);
+        // console.log(teamTwo, tempNextState);
         setNumberOfCreditsLeft(
             tempNextState
                 ? numberOfCreditsLeft - data.player.baseCreditValue
@@ -201,14 +201,14 @@ function PlayerSelection() {
                     `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/teams/squad?teamId=${selectedTeamsVal[0]}`
                 );
                 const data = responseTeam1.data;
-                console.log(data.data.squad);
+                // console.log(data.data.squad);
                 setPlayersTeamOne(data.data.squad);
 
                 const responseTeam2 = await axios.get(
                     `${import.meta.env.VITE_BASE_URL || "http://localhost:3000/api"}/ipl/teams/squad?teamId=${selectedTeamsVal[1]}`
                 );
                 const data2 = responseTeam2.data;
-                console.log(data2.data.squad);
+                // console.log(data2.data.squad);
                 setPlayersTeamTwo(data2.data.squad);
             } catch (error) {
                 console.error(error);
