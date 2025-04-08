@@ -66,7 +66,7 @@ export default function Profile() {
             }
         }
         getAllContests();
-    });
+    }, []); // Empty dependency array added
 
     const handleDeposit = async () => {
         if (!account) return toast.error("Please connect your wallet first");
@@ -229,7 +229,7 @@ export default function Profile() {
                             <ContestsEnrolledCards
                                 contest={data.contest}
                                 match={data.match}
-                                key={data.contestId}
+                                key={data.contest.contestId}
                             />
                         ))}
                     </div>
